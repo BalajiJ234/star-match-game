@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { utils } from "../helpers";
 import PlayAgain from "./PlayAgain";
 import PlayNumber from "./PlayNumber";
