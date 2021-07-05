@@ -1,6 +1,4 @@
-// STAR MATCH - Starting Template
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { utils } from "../helpers";
 import PlayAgain from "./PlayAgain";
 import PlayNumber from "./PlayNumber";
@@ -10,9 +8,25 @@ const StarMatch = () => {
   const [stars, setStars] = useState(utils.random(1, 9));
   const [availableNums, setAvailableNums] = useState(utils.range(1, 9));
   const [candidateNums, setCandidateNums] = useState([]);
+  const [secondsLeft, setSecondsLeft] = useState(10);
+
+  //setInterval, setTimeout
+
+  useEffect(() => {
+    if (secondsLeft > 0 && availableNums.length > 0) {
+      const timerId = setTimeout(() => {
+        setSecondsLeft(secondsLeft - 1);
+      }, 1000);
+      return () => clearTimeout(timerId);
+    }
+  });
 
   const candidatesAreWrong = utils.sum(candidateNums) > stars;
-  const gameIsDone = availableNums.length === 0;
+  // const gameIsWon = availableNums.length === 0;
+  // const gameIsLost = secondsLeft === 0;
+
+  const gameStatus =
+    availableNums.length === 0 ? "won" : secondsLeft === 0 ? "lost" : "active";
 
   const numberStatus = (number) => {
     if (!availableNums.includes(number)) {
@@ -26,7 +40,7 @@ const StarMatch = () => {
 
   const onNumberClick = (number, currentStatus) => {
     // currentStatus => newStatus
-    if (currentStatus === "used") {
+    if (gameStatus !== "active" || currentStatus === "used") {
       return;
     }
     // candidateNums
@@ -60,8 +74,8 @@ const StarMatch = () => {
       </div>
       <div className='body'>
         <div className='left'>
-          {gameIsDone ? (
-            <PlayAgain onReset={resetGame} />
+          {gameStatus !== "active" ? (
+            <PlayAgain onReset={resetGame} gameStatus={gameStatus} />
           ) : (
             <StarsDisplay stars={stars} />
           )}
@@ -77,7 +91,7 @@ const StarMatch = () => {
           ))}
         </div>
       </div>
-      <div className='timer'>Time Remaining: 10</div>
+      <div className='timer'>Time Remaining: {secondsLeft}</div>
     </div>
   );
 };
