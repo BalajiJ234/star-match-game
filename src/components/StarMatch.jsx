@@ -47,6 +47,12 @@ const StarMatch = () => {
     }
   };
 
+  const resetGame = () => {
+    setStars(utils.randomSumIn(1, 9));
+    setAvailableNums(utils.range(1, 9));
+    setCandidateNums([]);
+  };
+
   return (
     <div className='game'>
       <div className='help'>
@@ -54,7 +60,11 @@ const StarMatch = () => {
       </div>
       <div className='body'>
         <div className='left'>
-          {gameIsDone ? <PlayAgain /> : <StarsDisplay stars={stars} />}
+          {gameIsDone ? (
+            <PlayAgain onReset={resetGame} />
+          ) : (
+            <StarsDisplay stars={stars} />
+          )}
         </div>
         <div className='right'>
           {utils.range(1, 9).map((number) => (
